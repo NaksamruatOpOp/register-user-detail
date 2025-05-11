@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>รายชื่อนักเรียนทั้งหมด</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+  <style>
+    /* 🎨 Modal Close Button Styling in Header */
+    .modal-header {
+      background: #4285f4;
+      color: white;
+      padding: 16px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      position: relative;
+    }
+
+    .modal-close-in-header {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+
+    .modal-close-in-header:hover {
+      color: #ffcccb;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="student icon" class="header-icon">
+      <div>
+        <h1 class="title">ระบบบันทึกข้อมูลนักเรียน</h1>
+        <p class="subtitle">โรงเรียนอนุบาลวัดหนองขุนชาติ (อุทิศพิทยาคาร)</p>
+      </div>
+    </div>
+    <nav class="menu">
+      <button onclick="window.location.href='index.html'">👤 บันทึกข้อมูล</button>
+      <button class="active" onclick="window.location.href='listOverall.html'">📋 รายการทั้งหมด</button>
+      <button onclick="window.location.href='statistics.html'">📊 สถิติ</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title">📋 รายชื่อนักเรียนทั้งหมด</h2>
+
+    <div class="search-filter-bar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="ค้นหานักเรียน..." />
+      </div>
+      <select id="transportFilter" class="select-filter">
+        <option value="">การเดินทางทั้งหมด</option>
+        <option>รถยนต์ส่วนตัว</option>
+        <option>จักรยานยนต์</option>
+        <option>รถรับส่งนักเรียน</option>
+        <option>รถโดยสารประจำทาง</option>
+        <option>เดิน</option>
+        <option>อื่นๆ</option>
+      </select>
+      <select id="gradeFilter" class="select-filter">
+        <option value="">ระดับชั้นทั้งหมด</option>
+        <option>อนุบาล 1</option>
+        <option>อนุบาล 2</option>
+        <option>อนุบาล 3</option>
+        <option>ป.1</option>
+        <option>ป.2</option>
+        <option>ป.3</option>
+        <option>ป.4</option>
+        <option>ป.5</option>
+        <option>ป.6</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>ชื่อ-นามสกุล</th>
+            <th>ชื่อเล่น</th>
+            <th>ระดับชั้น/ห้อง</th>
+            <th>เดินทางโดย</th>
+            <th>เบอร์โทรผู้ปกครอง</th>
+            <th>การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="footer-placeholder"></div>
+
+  <!-- 🧾 Modal -->
+  <div id="studentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        รายละเอียดนักเรียน
+        <span class="modal-close modal-close-in-header" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-columns">
+        <div class="modal-section blue" id="modalStudentInfo"></div>
+        <div class="modal-section pink" id="modalTransportInfo"></div>
+        <div class="modal-section purple" id="modalFriendInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const urlGG = "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec";
+    let allStudents = [];
+
+    async function loadStudents() {
+      const res = await fetch(urlGG);
+      const json = await res.json();
+      if (json.result !== "success") return alert("โหลดข้อมูลล้มเหลว");
+      allStudents = json.data;
+      renderTable(allStudents);
+    }
+
+    function renderTable(data) {
+      const tbody = document.querySelector("#studentTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(student => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${student.firstName} ${student.lastName}</td>
+          <td>${student.nickname}</td>
+          <td>${student.grade || "-"} / ${student.room || "-"}</td>
+          <td>${student.transportation || "-"}</td>
+          <td>${student.parentPhone || "-"}</td>
+          <td>
+            <button onclick='viewStudent(${JSON.stringify(student)})' title="ดูรายละเอียด">🔎</button>
+            <!-- <button onclick='editStudent(${JSON.stringify(student)})' title="แก้ไข">✏️</button> -->
+            <!-- <button onclick='deleteStudent("${student.id}")' title="ลบ">🗑️</button> -->
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function deleteStudent(id) {
+      if (!confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) return;
+      fetch(urlGG, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify({
+            action: "delete",
+            id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === "success") {
+            alert("✅ ลบข้อมูลเรียบร้อยแล้ว");
+            loadStudents();
+          } else {
+            alert("❌ ลบไม่สำเร็จ: " + data.message);
+          }
+        });
+    }
+
+    function viewStudent(student) {
+      document.getElementById("modalStudentInfo").innerHTML = `
+        <h3>ข้อมูลนักเรียน</h3>
+        <p><span>ชื่อ-นามสกุล:</span> ${student.firstName} ${student.lastName}</p>
+        <p><span>ชื่อเล่น:</span> ${student.nickname}</p>
+        <p><span>ระดับชั้น/ห้อง:</span> ${student.grade || "-"} / ${student.room || "-"}</p>
+        <p><span>ที่อยู่:</span> ${student.address || "-"}</p>
+        <p><span>เบอร์โทรผู้ปกครอง:</span> ${student.parentPhone || "-"}</p>
+        <p><span>บันทึกเมื่อ:</span> ${student.createdAt || "-"}</p>`;
+
+      document.getElementById("modalTransportInfo").innerHTML = `
+        <h3>ข้อมูลการเดินทาง</h3>
+        <p><span>เดินทางโดย:</span> ${student.transportation || "-"}</p>`;
+
+      document.getElementById("modalFriendInfo").innerHTML = `
+        <h3>ข้อมูลเพื่อนสนิท</h3>
+        ${(student.friendName || student.friendNickname || student.friendRoom || student.friendGrade) ? `
+          <p><span>ชื่อ-นามสกุล:</span> ${student.friendName}</p>
+          <p><span>ชื่อเล่น:</span> ${student.friendNickname}</p>
+          <p><span>ระดับชั้น:</span> ${student.friendGrade}</p>
+          <p><span>ห้อง:</span> ${student.friendRoom}</p>
+        ` : '<p>ไม่มีข้อมูลเพื่อนสนิท</p>'}`;
+
+      document.getElementById("studentModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("studentModal").style.display = "none";
+    }
+
+    function editStudent(student) {
+      localStorage.setItem("editStudent", JSON.stringify(student));
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("searchInput").addEventListener("input", () => {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = allStudents.filter(s => `${s.firstName} ${s.lastName}`.toLowerCase().includes(q));
+      renderTable(filtered);
+    });
+
+    document.getElementById("transportFilter").addEventListener("change", applyFilters);
+    document.getElementById("gradeFilter").addEventListener("change", applyFilters);
+
+    function applyFilters() {
+      const trans = document.getElementById("transportFilter").value;
+      const grade = document.getElementById("gradeFilter").value;
+
+      let filtered = allStudents;
+      if (trans) filtered = filtered.filter(s => s.transportation === trans);
+      if (grade) filtered = filtered.filter(s => s.grade === grade);
+
+      renderTable(filtered);
+    }
+
+    window.onload = loadStudents;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      fetch("footer.html")
+        .then(res => res.ok ? res.text() : Promise.reject("Footer not found"))
+        .then(html => {
+          document.getElementById("footer-placeholder").innerHTML = html;
+        })
+        .catch(err => {
+          console.error("⚠️ Footer load error:", err);
+        });
+    });
+  </script>
+</body>
+
+</html>

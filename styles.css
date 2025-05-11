@@ -1,3 +1,5 @@
+/* styles.css */
+
 body {
   font-family: 'Sarabun', sans-serif;
   background: #f1f5fb;
@@ -133,9 +135,6 @@ body {
   flex-direction: column;
   margin-bottom: 20px;
   padding: 16px;
-  /* background: white; */
-  border-radius: 10px;
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   transition: all 0.2s ease;
   position: relative;
   z-index: 1;
@@ -204,4 +203,282 @@ body {
 
 .cancel-btn:hover {
   background-color: #f06292;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+#studentTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#studentTable thead {
+  background-color: #f1f1f1;
+}
+
+#studentTable th, #studentTable td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+  font-size: 14px;
+}
+
+#studentTable tr:hover {
+  background-color: #f9f9f9;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s ease;
+}
+
+.btn-action:hover {
+  transform: scale(1.2);
+}
+
+
+
+/* 🔍 Search and Filter Section Styling */
+.search-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-box {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  border: 2px solid #e3e7f1;
+  border-radius: 32px;
+  padding: 10px 16px;
+  background: white;
+  max-width: 600px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  margin-left: 8px;
+  flex-grow: 1;
+  background: transparent;
+  color: #333;
+}
+
+.search-box svg {
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+.select-filter {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #fff;
+  color: #333;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.select-filter:focus {
+  border-color: #64b5f6;
+  box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.2);
+  outline: none;
+}
+.select-filter option {
+  padding: 10px;
+  background: #fff;
+  color: #333;
+}
+.select-filter option:hover {
+  background: #f1f5fb;
+}
+.select-filter option:checked {
+  background: #e0e7ff;
+  color: #1d4ed8;
+}
+.select-filter option:checked:hover {
+  background: #c7d2fe;
+  color: #1e3a8a;
+}
+/* Responsive Styles */
+
+
+/* 📦 Modal Style */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  padding: 30px 40px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-header {
+  background-color: #4285f4;
+  color: white;
+  padding: 12px 20px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+.modal-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 20px 0;
+  flex-wrap: wrap;
+}
+
+.modal-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.modal-section h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.modal-section.blue h3 {
+  color: #1e88e5;
+}
+.modal-section.pink h3 {
+  color: #e91e63;
+}
+.modal-section.purple h3 {
+  color: #7e57c2;
+}
+
+.modal-section p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #333;
+}
+
+.modal-section p span {
+  font-weight: bold;
+  color: #000;
+}
+
+/* ✅ Statistics Page Enhancements */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  justify-content: flex-end;
+}
+
+.gradient-blue-pink {
+  background: linear-gradient(to right, #7986cb, #f48fb1);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px 10px 0 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 📊 สถิติ Cards Section */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.stats-cards .card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.stats-cards .card:hover {
+  transform: translateY(-4px);
+}
+
+.stats-cards .card .count {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stats-cards .blue .count {
+  color: #4285f4;
+}
+
+.stats-cards .pink .count {
+  color: #e91e63;
+}
+
+.stats-cards .purple .count {
+  color: #7e57c2;
+}
+
+.stats-cards .green .count {
+  color: #4caf50;
 }

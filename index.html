@@ -19,8 +19,8 @@
     </div>
     <nav class="menu">
       <button class="active">👤 บันทึกข้อมูล</button>
-      <button>📋 รายการทั้งหมด</button>
-      <button>📊 สถิติ</button>
+      <button onclick="window.location.href='listOverall.html'">📋 รายการทั้งหมด</button>
+      <button onclick="window.location.href='statistics.html'">📊 สถิติ</button>
     </nav>
   </header>
   <div class="container">
@@ -122,8 +122,12 @@
       </div>
     </form>
   </div>
+  <div id="footer-placeholder"></div>
 
   <script>
+    // const urlGG = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec"
+    const urlGG = "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec";
+
     document.getElementById("transport-select").addEventListener("change", function() {
       const showExtra = ["รถยนต์ส่วนตัว", "จักรยานยนต์", "รถรับส่งนักเรียน"];
       const selected = this.value;
@@ -143,8 +147,7 @@
 
       console.log("🚀 student payload", student);
 
-      // urlGG = "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec"
-      fetch(process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL, {
+      fetch(urlGG, {
           method: "POST",
           headers: {
             "Content-Type": "text/plain"
@@ -179,12 +182,17 @@
       alert("👤 คุณอยู่ในหน้าบันทึกข้อมูลนักเรียน");
     });
 
-    document.querySelector(".menu button:nth-child(2)").addEventListener("click", function() {
-      window.location.href = "list.html";
-    });
-
-    document.querySelector(".menu button:nth-child(3)").addEventListener("click", function() {
-      window.location.href = "statistics.html";
+    // Load footer
+    // Fetch the footer HTML and insert it into the placeholder
+    window.addEventListener("DOMContentLoaded", () => {
+      fetch("footer.html")
+        .then(res => res.ok ? res.text() : Promise.reject("Footer not found"))
+        .then(html => {
+          document.getElementById("footer-placeholder").innerHTML = html;
+        })
+        .catch(err => {
+          console.error("⚠️ Footer load error:", err);
+        });
     });
   </script>
 </body>

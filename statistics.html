@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>สถิติ</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="student icon" class="header-icon">
+      <div>
+        <h1 class="title">ระบบบันทึกข้อมูลนักเรียน</h1>
+        <p class="subtitle">โรงเรียนอนุบาลวัดหนองขุนชาติ (อุทิศพิทยาคาร)</p>
+      </div>
+    </div>
+    <nav class="menu">
+      <button onclick="window.location.href='index.html'">👤 บันทึกข้อมูล</button>
+      <button onclick="window.location.href='listOverall.html'">📋 รายการทั้งหมด</button>
+      <button class="active" onclick="window.location.href='statistics.html'">📊 สถิติ</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="stats-grid">
+      <div class="chart-card">
+        <div class="section-title gradient-blue-pink">📈 สถิติการเดินทาง</div>
+        <canvas id="transportChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <div class="section-title gradient-blue-pink">📊 สถิติระดับชั้น</div>
+        <canvas id="gradeChart"></canvas>
+      </div>
+    </div>
+
+    <!-- <div class="filter-row">
+      <label for="yearFilter">ปีการศึกษา:</label>
+      <select id="yearFilter" class="select-filter">
+        <option value="all">ทั้งหมด</option>
+        <option value="2567">2567</option>
+        <option value="2566">2566</option>
+      </select>
+    </div> -->
+
+    <div class="stats-cards">
+      <div class="card blue">
+        <div class="count" id="totalCount">-</div>
+        <div>นักเรียนทั้งหมด</div>
+      </div>
+      <div class="card pink">
+        <div class="count" id="kindergartenCount">-</div>
+        <div>ระดับอนุบาล</div>
+      </div>
+      <div class="card purple">
+        <div class="count" id="primaryCount">-</div>
+        <div>ระดับประถมศึกษา</div>
+      </div>
+      <div class="card green">
+        <div class="count" id="vanCount">-</div>
+        <div>ใช้รถรับส่งนักเรียน</div>
+      </div>
+    </div>
+  </div>
+  <div id="footer-placeholder"></div>
+
+
+  <script>
+    const urlGG = "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec";
+    let transportChart, gradeChart, allData = [];
+
+    fetch(urlGG)
+      .then(res => res.json())
+      .then(({
+        data
+      }) => {
+        allData = data;
+        updateCharts(data);
+        document.getElementById("yearFilter").addEventListener("change", () => {
+          const year = document.getElementById("yearFilter").value;
+          const filtered = year === "all" ? allData : allData.filter(s => s.createdAt?.startsWith(year));
+          updateCharts(filtered);
+        });
+      });
+
+    function updateCharts(data) {
+      const transportCounts = {};
+      const gradeCounts = {};
+
+      let kinder = 0,
+        primary = 0,
+        van = 0;
+
+      data.forEach(s => {
+        transportCounts[s.transportation] = (transportCounts[s.transportation] || 0) + 1;
+        gradeCounts[s.grade] = (gradeCounts[s.grade] || 0) + 1;
+
+        if (s.grade?.includes("อนุบาล")) kinder++;
+        if (s.grade?.includes("ป.")) primary++;
+        if (s.transportation === "รถรับส่งนักเรียน") van++;
+      });
+
+      document.getElementById("totalCount").innerText = data.length;
+      document.getElementById("kindergartenCount").innerText = kinder;
+      document.getElementById("primaryCount").innerText = primary;
+      document.getElementById("vanCount").innerText = van;
+
+      const transportLabels = Object.keys(transportCounts);
+      const transportData = Object.values(transportCounts);
+      const gradeLabels = Object.keys(gradeCounts);
+      const gradeData = Object.values(gradeCounts);
+
+      if (transportChart) transportChart.destroy();
+      transportChart = new Chart(document.getElementById("transportChart"), {
+        type: 'pie',
+        data: {
+          labels: transportLabels,
+          datasets: [{
+            label: "การเดินทางของนักเรียน",
+            data: transportData,
+            backgroundColor: ["#4e73df", "#f48fb1", "#36b9cc", "#f6c23e", "#81c784", "#ff8a65"]
+          }]
+        }
+      });
+
+      if (gradeChart) gradeChart.destroy();
+      gradeChart = new Chart(document.getElementById("gradeChart"), {
+        type: 'bar',
+        data: {
+          labels: gradeLabels,
+          datasets: [{
+            label: "จำนวนนักเรียน",
+            data: gradeData,
+            backgroundColor: "#a78bfa"
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+      fetch("footer.html")
+        .then(res => res.ok ? res.text() : Promise.reject("Footer not found"))
+        .then(html => {
+          document.getElementById("footer-placeholder").innerHTML = html;
+        })
+        .catch(err => {
+          console.error("⚠️ Footer load error:", err);
+        });
+    });
+  </script>
+</body>
+
+</html>
