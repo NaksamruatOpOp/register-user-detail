@@ -34,11 +34,16 @@
         <div class="form-item"><label>นามสกุล *</label><input name="lastName" required></div>
         <div class="form-item"><label>ชื่อเล่น *</label><input name="nickname" required></div>
         <div class="form-item"><label>ระดับชั้น *</label>
-          <select name="level" required>
+          <select name="grade" required>
             <option value="">-- เลือกระดับชั้น --</option>
-            <option>อนุบาล 1</option>
             <option>อนุบาล 2</option>
             <option>อนุบาล 3</option>
+            <option>ป.1</option>
+            <option>ป.2</option>
+            <option>ป.3</option>
+            <option>ป.4</option>
+            <option>ป.5</option>
+            <option>ป.6</option>
           </select>
         </div>
         <div class="form-item"><label>ห้อง *</label><input name="room" required></div>
@@ -57,15 +62,35 @@
       <div class="travel-info">
         <div class="form-item full">
           <label>เดินทางโดย *</label>
-          <select name="transport" required>
+          <select name="transportation" id="transport-select" required>
             <option value="">-- เลือกวิธีการเดินทาง --</option>
             <option>รถยนต์ส่วนตัว</option>
             <option>จักรยานยนต์</option>
-            <option>รถส่งนักเรียน</option>
+            <option>รถรับส่งนักเรียน</option>
             <option>รถโดยสารประจำทาง</option>
             <option>เดิน</option>
             <option>อื่นๆ</option>
           </select>
+        </div>
+      </div>
+
+      <!-- 🔽 แสดงเมื่อเลือกวิธีที่ต้องกรอกเพิ่ม -->
+      <div id="transport-extra-fields" style="display: none;" class="travel-info">
+        <div class="form-item">
+          <label>🧑‍💼 ชื่อเจ้าของรถ</label>
+          <input type="text" name="vehicleOwner" />
+        </div>
+        <div class="form-item">
+          <label>📞 เบอร์โทรเจ้าของรถ</label>
+          <input type="text" name="ownerPhone" />
+        </div>
+        <div class="form-item">
+          <label>👨‍✈️ ชื่อคนขับรถ</label>
+          <input type="text" name="driverName" />
+        </div>
+        <div class="form-item">
+          <label>📱 เบอร์โทรคนขับรถ</label>
+          <input type="text" name="driverPhone" />
         </div>
       </div>
 
@@ -76,11 +101,16 @@
         <div class="form-item"><label>ชื่อเล่น</label><input name="friendNickname"></div>
         <div class="form-item"><label>ห้อง</label><input name="friendRoom"></div>
         <div class="form-item"><label>ระดับชั้น</label>
-          <select name="friendLevel">
+          <select name="friendGrade">
             <option value="">-- เลือกระดับชั้น --</option>
-            <option>อนุบาล 1</option>
             <option>อนุบาล 2</option>
             <option>อนุบาล 3</option>
+            <option>ป.1</option>
+            <option>ป.2</option>
+            <option>ป.3</option>
+            <option>ป.4</option>
+            <option>ป.5</option>
+            <option>ป.6</option>
           </select>
         </div>
       </div>
@@ -94,26 +124,35 @@
   </div>
 
   <script>
+    document.getElementById("transport-select").addEventListener("change", function() {
+      const showExtra = ["รถยนต์ส่วนตัว", "จักรยานยนต์", "รถรับส่งนักเรียน"];
+      const selected = this.value;
+      const extraFields = document.getElementById("transport-extra-fields");
+      extraFields.style.display = showExtra.includes(selected) ? "grid" : "none";
+    });
+
     document.getElementById("studentForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
       const formData = new FormData(this);
       const student = {};
       formData.forEach((value, key) => student[key] = value);
-      student.id = Date.now().toString(); // unique ID
-      student.createdAt = new Date().toISOString();
-      // student.updatedAt = new Date().toISOString();
-      // student.status = "active"; // default status
-      const gs_url = "https://script.google.com/macros/s/AKfycbzUPqjYEy_zLw2fufmPSbvy0xU_EwzSM13x1bCEJQFQneEHY2UK6tN9MZ0erfMPeW-m/exec"
-      fetch(gs_url, {
+      student.id = Date.now().toString();
+      const now = new Date();
+      now.setHours(now.getHours() + 7); // เพิ่มเวลา 7 ชั่วโมง (UTC+7)
+      student.createdAt = now.toISOString().replace("T", " ").substring(0, 19);
+
+      console.log("🚀 student payload", student);
+
+      urlGG = "https://script.google.com/macros/s/AKfycbzRB8T4-IyLuZR6Q7dJXmTdC1dqfNZSHcXnYCTZpQpahQWmfBMybyfqNfIQH105fgFc/exec"
+      fetch(urlGG, {
           method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
           body: JSON.stringify({
             action: "add",
-            student: student,
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
+            student: student
+          })
         })
         .then(res => res.json())
         .then(data => {
@@ -129,22 +168,25 @@
           console.error(err);
         });
     });
+
     document.querySelector(".cancel-btn").addEventListener("click", function() {
       if (confirm("❌ ยืนยันการยกเลิก?")) {
         document.getElementById("studentForm").reset();
       }
     });
+
     document.querySelector(".active").addEventListener("click", function() {
       alert("👤 คุณอยู่ในหน้าบันทึกข้อมูลนักเรียน");
     });
+
     document.querySelector(".menu button:nth-child(2)").addEventListener("click", function() {
-      window.location.href = "list.html"; // Redirect to list page
+      window.location.href = "list.html";
     });
+
     document.querySelector(".menu button:nth-child(3)").addEventListener("click", function() {
-      window.location.href = "statistics.html"; // Redirect to statistics page
+      window.location.href = "statistics.html";
     });
   </script>
-
 </body>
 
 </html>
