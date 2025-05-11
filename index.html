@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบบันทึกข้อมูลนักเรียน</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="student icon" class="header-icon">
+      <div>
+        <h1 class="title">ระบบบันทึกข้อมูลนักเรียน</h1>
+        <p class="subtitle">โรงเรียนอนุบาลวัดหนองขุนชาติ (อุทิศพิทยาคาร)</p>
+      </div>
+    </div>
+    <nav class="menu">
+      <button class="active">👤 บันทึกข้อมูล</button>
+      <button>📋 รายการทั้งหมด</button>
+      <button>📊 สถิติ</button>
+    </nav>
+  </header>
+  <div class="container">
+    <h2>📘 ระบบบันทึกข้อมูลนักเรียน</h2>
+
+    <form id="studentForm">
+      <!-- 👩🏻‍💻 ข้อมูลนักเรียน -->
+      <div class="section-title">👩🏻‍💻 ข้อมูลนักเรียน</div>
+      <div class="student-info">
+        <div class="form-item"><label>ชื่อ *</label><input name="firstName" required></div>
+        <div class="form-item"><label>นามสกุล *</label><input name="lastName" required></div>
+        <div class="form-item"><label>ชื่อเล่น *</label><input name="nickname" required></div>
+        <div class="form-item"><label>ระดับชั้น *</label>
+          <select name="level" required>
+            <option value="">-- เลือกระดับชั้น --</option>
+            <option>อนุบาล 1</option>
+            <option>อนุบาล 2</option>
+            <option>อนุบาล 3</option>
+          </select>
+        </div>
+        <div class="form-item"><label>ห้อง *</label><input name="room" required></div>
+        <div class="form-item"><label>เบอร์โทรผู้ปกครอง *</label><input name="parentPhone" required></div>
+      </div>
+
+      <div class="address-row">
+        <div class="form-item full">
+          <label>ที่อยู่ *</label>
+          <textarea name="address" rows="3" required></textarea>
+        </div>
+      </div>
+
+      <!-- 🚗 ข้อมูลการเดินทาง -->
+      <div class="section-title">🚗 ข้อมูลการเดินทาง</div>
+      <div class="travel-info">
+        <div class="form-item full">
+          <label>เดินทางโดย *</label>
+          <select name="transport" required>
+            <option value="">-- เลือกวิธีการเดินทาง --</option>
+            <option>รถยนต์ส่วนตัว</option>
+            <option>จักรยานยนต์</option>
+            <option>รถส่งนักเรียน</option>
+            <option>รถโดยสารประจำทาง</option>
+            <option>เดิน</option>
+            <option>อื่นๆ</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 👯‍♀️ ข้อมูลเพื่อนสนิท -->
+      <div class="section-title">👯‍♀️ ข้อมูลเพื่อนสนิท</div>
+      <div class="student-info">
+        <div class="form-item"><label>ชื่อ-สกุลเพื่อนสนิท</label><input name="friendName"></div>
+        <div class="form-item"><label>ชื่อเล่น</label><input name="friendNickname"></div>
+        <div class="form-item"><label>ห้อง</label><input name="friendRoom"></div>
+        <div class="form-item"><label>ระดับชั้น</label>
+          <select name="friendLevel">
+            <option value="">-- เลือกระดับชั้น --</option>
+            <option>อนุบาล 1</option>
+            <option>อนุบาล 2</option>
+            <option>อนุบาล 3</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ปุ่มบันทึก -->
+      <div class="buttons">
+        <button type="submit" class="save-btn">💾 บันทึก</button>
+        <button type="reset" class="cancel-btn">❌ ยกเลิก</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("studentForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const student = {};
+      formData.forEach((value, key) => student[key] = value);
+      student.id = Date.now().toString(); // unique ID
+      student.createdAt = new Date().toISOString();
+      // student.updatedAt = new Date().toISOString();
+      // student.status = "active"; // default status
+      const gs_url = "https://script.google.com/macros/s/AKfycbzUPqjYEy_zLw2fufmPSbvy0xU_EwzSM13x1bCEJQFQneEHY2UK6tN9MZ0erfMPeW-m/exec"
+      fetch(gs_url, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "add",
+            student: student,
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === "success") {
+            alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+            this.reset();
+          } else {
+            alert("❌ Error: " + data.message);
+          }
+        })
+        .catch(err => {
+          alert("❌ Network Error");
+          console.error(err);
+        });
+    });
+    document.querySelector(".cancel-btn").addEventListener("click", function() {
+      if (confirm("❌ ยืนยันการยกเลิก?")) {
+        document.getElementById("studentForm").reset();
+      }
+    });
+    document.querySelector(".active").addEventListener("click", function() {
+      alert("👤 คุณอยู่ในหน้าบันทึกข้อมูลนักเรียน");
+    });
+    document.querySelector(".menu button:nth-child(2)").addEventListener("click", function() {
+      window.location.href = "list.html"; // Redirect to list page
+    });
+    document.querySelector(".menu button:nth-child(3)").addEventListener("click", function() {
+      window.location.href = "statistics.html"; // Redirect to statistics page
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบบันทึกข้อมูลนักเรียน</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #fce4ec);
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 880px;
+      margin: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #4a148c;
+      margin-bottom: 30px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .tabs button {
+      background: #bbdefb;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #0d47a1;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tabs button:hover {
+      background: #90caf9;
+    }
+
+    .section-title {
+      background: #f8bbd0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #880e4f;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      background-color: #f9f9fc;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border: 1px solid #64b5f6;
+      box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.25);
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .buttons button {
+      padding: 10px 22px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      margin: 0 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .save-btn {
+      background-color: #64b5f6;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: #f48fb1;
+      color: white;
+    }
+
+    .save-btn:hover {
+      background-color: #42a5f5;
+    }
+
+    .cancel-btn:hover {
+      background-color: #f06292;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>📘 ระบบบันทึกข้อมูลนักเรียน</h2>
+
+    <div class="tabs">
+      <button>บันทึก</button>
+      <button>รายชื่อ</button>
+      <button>สถิติ</button>
+    </div>
+
+    <form id="studentForm">
+      <div class="section-title">👩🏻‍💻 ข้อมูลนักเรียน</div>
+      <div class="form-group student-info">
+  <div class="form-item">
+    <label>ชื่อ <span style="color:red">*</span></label>
+    <input name="firstName" required>
+  </div>
+  <div class="form-item">
+    <label>นามสกุล <span style="color:red">*</span></label>
+    <input name="lastName" required>
+  </div>
+  <div class="form-item">
+    <label>ชื่อเล่น <span style="color:red">*</span></label>
+    <input name="nickname" required>
+  </div>
+  <div class="form-item">
+    <label>ระดับชั้น <span style="color:red">*</span></label>
+    <select name="level" required>
+      <option value="">-- เลือกระดับชั้น --</option>
+      <option value="อนุบาล 1">อนุบาล 1</option>
+      <option value="อนุบาล 2">อนุบาล 2</option>
+      <option value="อนุบาล 3">อนุบาล 3</option>
+    </select>
+  </div>
+  <div class="form-item">
+    <label>ห้อง <span style="color:red">*</span></label>
+    <input name="room" required>
+  </div>
+  <div class="form-item">
+    <label>เบอร์โทรผู้ปกครอง <span style="color:red">*</span></label>
+    <input name="parentPhone" required>
+  </div>
+</div>
+
+<!-- Textarea อยู่ล่างสุด เต็มแถว -->
+<div class="form-group address-row">
+  <div class="form-item full">
+    <label>ที่อยู่ <span style="color:red">*</span></label>
+    <textarea name="address" rows="3" required></textarea>
+  </div>
+</div>
+
+
+      <div class="section-title">🚗 ข้อมูลการเดินทาง</div>
+      <div class="form-group">
+        <div><label>เดินทางโดย</label>
+          <select name="transport" required>
+            <option value="รถยนต์ส่วนตัว">รถยนต์ส่วนตัว</option>
+            <option value="จักรยานยนต์">จักรยานยนต์</option>
+            <option value="รถส่งนักเรียน">รถส่งนักเรียน</option>
+            <option value="รถโดยสารประจำทาง">รถโดยสารประจำทาง</option>
+            <option value="เดิน">เดิน</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">👥 ข้อมูลเพื่อนสนิท</div>
+      <div class="form-group">
+        <div><label>ชื่อ-สกุลเพื่อนสนิท</label><input name="friendName"></div>
+        <div><label>ชื่อเล่น</label><input name="friendNickname"></div>
+        <div><label>ห้อง</label><input name="friendRoom"></div>
+        <div><label>ระดับชั้น</label>
+          <select name="friendLevel">
+            <option value="">-- เลือกระดับชั้น --</option>
+            <option value="อนุบาล 1">อนุบาล 1</option>
+            <option value="อนุบาล 2">อนุบาล 2</option>
+            <option value="อนุบาล 3">อนุบาล 3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" class="save-btn">💾 บันทึก</button>
+        <button type="reset" class="cancel-btn">❌ ยกเลิก</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+      fetch('YOUR_APPS_SCRIPT_URL_HERE', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(result => alert('ส่งข้อมูลเรียบร้อยแล้ว!'))
+        .catch(error => alert('เกิดข้อผิดพลาดในการส่งข้อมูล'));
+    });
+  </script>
+
+</body>
+
+</html>
