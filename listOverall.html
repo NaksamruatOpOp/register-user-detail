@@ -42,7 +42,7 @@
     <div class="header-content">
       <img src="images/title.jpeg" class="header-icon" alt="School logo">
       <div>
-        <h1 class="title">ระบบบันทึกข้อมูลนักเรียน</h1>
+        <h1 class="title">ระบบบันทึกข้อมูลนักเรียนและการเดินทาง</h1>
         <p class="subtitle">โรงเรียนอนุบาลวัดหนองขุนชาติ (อุทิศพิทยาคาร)</p>
       </div>
     </div>
@@ -186,7 +186,11 @@
 
       document.getElementById("modalTransportInfo").innerHTML = `
         <h3>ข้อมูลการเดินทาง</h3>
-        <p><span>เดินทางโดย:</span> ${student.transportation || "-"}</p>`;
+        <p><span>เดินทางโดย:</span> ${student.transportation || "-"}</p>
+        <p><span>ชื่อเจ้าของรถ:</span> ${student.vehicleOwner || "-"}</p>
+        <p><span>เบอร์โทรเจ้าของรถ:</span> ${student.ownerPhone || "-"}</p>
+        <p><span>ชื่อคนขับรถ:</span> ${student.driverName || "-"}</p>
+        <p><span>เบอร์โทรคนขับรถ:</span> ${student.driverPhone || "-"}</p>`;
 
       document.getElementById("modalFriendInfo").innerHTML = `
         <h3>ข้อมูลเพื่อนสนิท</h3>
@@ -211,7 +215,7 @@
 
     document.getElementById("searchInput").addEventListener("input", () => {
       const q = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = allStudents.filter(s => `${s.firstName} ${s.lastName}`.toLowerCase().includes(q));
+      const filtered = allStudents.filter(s => `${s.firstName} ${s.lastName} ${s.nickname} ${s.driverName}`.toLowerCase().includes(q));
       renderTable(filtered);
     });
 
